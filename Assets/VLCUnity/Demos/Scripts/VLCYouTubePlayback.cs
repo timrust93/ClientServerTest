@@ -3,6 +3,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using LibVLCSharp;
+using UnityEngine.UI;
 
 /// this class serves as an example on how to configure playback in Unity with VLC for Unity using LibVLCSharp.
 /// for libvlcsharp usage documentation, please visit https://code.videolan.org/videolan/LibVLCSharp/-/blob/master/docs/home.md
@@ -14,7 +15,7 @@ public class VLCYouTubePlayback : MonoBehaviour
     const int seekTimeDelta = 5000;
     Texture2D tex = null;
     bool playing;
-    public string youtubeUri = "https://www.youtube.com/watch?v=aqz-KE-bpKQ";
+    [SerializeField] private Image _image;
     
     async void Awake()
     {
@@ -22,7 +23,7 @@ public class VLCYouTubePlayback : MonoBehaviour
 
         Core.Initialize(Application.dataPath);
 
-        _libVLC = new LibVLC(enableDebugLogs: true);        
+        _libVLC = new LibVLC(enableDebugLogs: true);
 
         Application.SetStackTraceLogType(LogType.Log, StackTraceLogType.None);
         //_libVLC.Log += (s, e) => UnityEngine.Debug.Log(e.FormattedLog); // enable this for logs in the editor
@@ -70,9 +71,7 @@ public class VLCYouTubePlayback : MonoBehaviour
             if(_mediaPlayer.Media == null)
             {
                 // playing youtube video
-                Debug.Log("play youtube");
-                //var youtubeLink = new Media(new Uri("https://www.youtube.com/watch?v=aqz-KE-bpKQ"));
-                var youtubeLink = new Media(new Uri(youtubeUri));
+                var youtubeLink = new Media(new Uri("https://www.youtube.com/watch?v=aqz-KE-bpKQ"));
                 await youtubeLink.ParseAsync(_libVLC, MediaParseOptions.ParseNetwork);
                 _mediaPlayer.Media = youtubeLink.SubItems.First();
             }
@@ -98,7 +97,6 @@ public class VLCYouTubePlayback : MonoBehaviour
         // there is no need to dispose every time you stop, but you should do so when you're done using the mediaplayer and this is how:
         // _mediaPlayer?.Dispose(); 
         // _mediaPlayer = null;
-        GetComponent<Renderer>().material.mainTexture = null;
         tex = null;
     }
 
@@ -123,7 +121,9 @@ public class VLCYouTubePlayback : MonoBehaviour
                     false,
                     true,
                     texptr);
-                GetComponent<Renderer>().material.mainTexture = tex;
+                _image.rectTransform.sizeDelta = new Vector2(tex.width, tex.height);
+                _image.sprite = Sprite.Create(tex, new Rect(0, 0, tex.width, tex.height),
+                    Vector2.zero);
             }
         }
         else if (tex != null)

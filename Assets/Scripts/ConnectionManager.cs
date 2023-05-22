@@ -5,6 +5,8 @@ using UnityEngine;
 public class ConnectionManager : MonoBehaviour
 {
     [SerializeField] private ConnectionStatus _connectionStatus;
+    [SerializeField] private ConfigsManager _configsManager;
+
     public ConnectionStatus ConnectionStatus => _connectionStatus;
     public System.Action<ConnectionStatus> OnConnectionStatusChanged;
 
@@ -16,7 +18,7 @@ public class ConnectionManager : MonoBehaviour
     {        
         _connectionStatus = ConnectionStatus.Offline;
         OnConnectionStatusChanged?.Invoke(_connectionStatus);        
-        ClientConnect.ConnectNew();
+        ClientConnect.ConnectNew(_configsManager.SocketLink);
     }
 
     private void Update()
@@ -48,7 +50,7 @@ public class ConnectionManager : MonoBehaviour
                 _connectionStatus = ConnectionStatus.Offline;
                 OnConnectionStatusChanged?.Invoke(_connectionStatus);
                 if (!ClientConnect.IsSocketConnecting())
-                    ClientConnect.ConnectNew();
+                    ClientConnect.ConnectNew(_configsManager.SocketLink);
             }
         }    
     }

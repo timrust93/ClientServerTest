@@ -31,8 +31,11 @@ public class SettingsManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        SetLookSoundToggle();
         _audioVolumeSld.onValueChanged.AddListener(delegate { VolumeSliderChanged(); });
+        _audioVolumeSld.value = SoundManager.Inst.SoundVol;
     }
+
 
     // Update is called once per frame
     void Update()
@@ -52,32 +55,44 @@ public class SettingsManager : MonoBehaviour
     {
         _settingsPanel.gameObject.SetActive(true);
         UpdateServerSettingsUI();
+        SoundManager.Inst.PlayDefaultButtonSound();
     }
 
     public void CloseButton()
     {
         _settingsPanel.gameObject.SetActive(false);
+        SoundManager.Inst.PlayDefaultButtonSound();
     }
 
     public void CloseErrorPanelButton()
     {
         _settingsErrorPanel.gameObject.SetActive(false);
         UpdateServerSettingsUI();
+        SoundManager.Inst.PlayDefaultButtonSound();
     }
 
     public void CloseSuccesPanelButton()
     {
         _settingsSuccessPanel.gameObject.SetActive(false);
+        SoundManager.Inst.PlayDefaultButtonSound();
     }
 
     public void ToggleSoundsButton()
     {
+        SoundManager.Inst.ToggleMusic();
+        SoundManager.Inst.PlayDefaultButtonSound();
+        SetLookSoundToggle();
+    }
 
+    private void SetLookSoundToggle()
+    {
+        Sprite spriteForButton = SoundManager.Inst.SoundOn ? _soundOnSprite : _soundOffSprite;
+        _toggleSoundsBtn.image.sprite = spriteForButton;
     }
 
     private void VolumeSliderChanged()
     {
-        //_audioVolumeSld.value;
+        SoundManager.Inst.SetSoundVolume(_audioVolumeSld.value);        
     }
 
     public void ApplyConnectionsButton()
@@ -116,5 +131,6 @@ public class SettingsManager : MonoBehaviour
         {
             _settingsSuccessPanel.gameObject.SetActive(true);
         }
+        SoundManager.Inst.PlayDefaultButtonSound();
     }
 }

@@ -8,6 +8,8 @@ using System.Linq;
 
 public class ConfigsManager : MonoBehaviour
 {
+    public static ConfigsManager Instance;
+
     private const int ignoreTillLineIndex = 1;
 
     private const string SERVER_IP_Key = "Server address";
@@ -102,14 +104,30 @@ public class ConfigsManager : MonoBehaviour
     }
     #endregion
 
+    public string SocketLink
+    {
+        get
+        {            
+            return  "ws://" + ServerIPAdress + ":" + ServerPortNumber + "/ws";
+        }
+    }
+
     public string ConfigFilePath()
     {
         return Application.streamingAssetsPath + "/config.txt";
     }
 
-    // Start is called before the first frame update
-    void Start()
+    
+    void Awake()
     {
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
         InitializeConfigsDictionary();        
         ReadFile();
     }
