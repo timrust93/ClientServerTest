@@ -1,0 +1,3 @@
+Server address : 185.246.65.199
+Port : 9090
+Video link : https://www.youtube.com/watch?v=JqcncLPi9zw
